@@ -19,17 +19,27 @@ public class RestaurantController {
     }
 
     @PostMapping
-    public int create(@RequestBody Restaurant restaurant) {
+    public int createRest(@RequestBody Restaurant restaurant) {
         return restaurantService.add(restaurant);
     }
 
     @GetMapping
-    public List<Restaurant> listRestaurants() {
+    public List<Restaurant> getList() {
         return restaurantService.findRestaurants();
     }
 
     @GetMapping("/{restaurantId}")
-    public Restaurant restaurant(@PathVariable int restaurantId) {
+    public Restaurant getRest(@PathVariable int restaurantId) {
         return restaurantService.findRestaurant(restaurantId);
+    }
+
+    @PatchMapping
+    public Restaurant setRest(@RequestBody Restaurant restaurant) {
+        return restaurantService.updateRest(restaurant);
+    }
+
+    @DeleteMapping("/{restaurantId}")
+    public void deleteRest(@PathVariable int restaurantId) {
+        restaurantService.deleteRest(restaurantId);
     }
 }

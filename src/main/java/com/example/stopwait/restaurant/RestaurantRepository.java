@@ -11,11 +11,10 @@ import java.util.Map;
 public class RestaurantRepository {
 
     private static Map<Integer, Restaurant> db = new HashMap<>();
-    private static int seq = 0;
 
     public int save(Restaurant restaurant) {
-        db.put(++seq, restaurant);
-        return db.get(seq).getId();
+        db.put(restaurant.getId(), restaurant);
+        return db.get(restaurant.getId()).getId();
     }
 
     public List<Restaurant> findAll() {
@@ -24,5 +23,22 @@ public class RestaurantRepository {
 
     public Restaurant findById(int restaurantId) {
         return db.get(restaurantId);
+    }
+
+    public Restaurant updateRest(Restaurant restaurant) {
+        Restaurant updateRest = db.get(restaurant.getId());
+        updateRest.setName(restaurant.getName());
+        updateRest.setContent(restaurant.getContent());
+        updateRest.setCategory(restaurant.getCategory());
+        updateRest.setRating(restaurant.getRating());
+        updateRest.setReview(restaurant.getReview());
+
+        db.put(restaurant.getId(), updateRest);
+
+        return db.get(restaurant.getId());
+    }
+
+    public void deleteRest(int restaurantId) {
+        db.remove(restaurantId);
     }
 }
