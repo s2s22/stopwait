@@ -1,9 +1,6 @@
 package com.example.stopwait.restaurant;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,31 +8,30 @@ import java.util.List;
 @Service
 public class RestaurantService {
 
-
-    private final RestaurantRepository restaurantRepository;
+    private final RestaurRepository restaurantRepository;
 
     @Autowired
-    public RestaurantService(RestaurantRepository restaurantRepository) {
+    public RestaurantService(RestaurRepository restaurantRepository) {
         this.restaurantRepository = restaurantRepository;
     }
 
-    public int add(Restaurant restaurant) {
+    public int createRest(Restaurant restaurant) {
         return restaurantRepository.save(restaurant);
     }
 
-    public List<Restaurant> findRestaurants() {
+    public List<Restaurant> getAllRest() {
         return restaurantRepository.findAll();
     }
 
-    public Restaurant findRestaurant(int restaurantId) {
+    public Restaurant getRest(int restaurantId) {
         return restaurantRepository.findById(restaurantId);
     }
 
     public Restaurant updateRest(Restaurant restaurant) {
-        return restaurantRepository.updateRest(restaurant);
+        return restaurantRepository.update(restaurant);
     }
 
     public void deleteRest(int restaurantId) {
-        restaurantRepository.deleteRest(restaurantId);
+        restaurantRepository.delete(restaurantId);
     }
 }

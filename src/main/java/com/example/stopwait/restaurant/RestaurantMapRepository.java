@@ -8,24 +8,28 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class RestaurantRepository {
+public class RestaurantMapRepository implements RestaurRepository{
 
     private static Map<Integer, Restaurant> db = new HashMap<>();
 
+    @Override
     public int save(Restaurant restaurant) {
         db.put(restaurant.getId(), restaurant);
         return db.get(restaurant.getId()).getId();
     }
 
+    @Override
     public List<Restaurant> findAll() {
         return new ArrayList<>(db.values());
     }
 
+    @Override
     public Restaurant findById(int restaurantId) {
         return db.get(restaurantId);
     }
 
-    public Restaurant updateRest(Restaurant restaurant) {
+    @Override
+    public Restaurant update(Restaurant restaurant) {
         Restaurant updateRest = db.get(restaurant.getId());
         updateRest.setName(restaurant.getName());
         updateRest.setContent(restaurant.getContent());
@@ -38,7 +42,8 @@ public class RestaurantRepository {
         return db.get(restaurant.getId());
     }
 
-    public void deleteRest(int restaurantId) {
+    @Override
+    public void delete(int restaurantId) {
         db.remove(restaurantId);
     }
 }
