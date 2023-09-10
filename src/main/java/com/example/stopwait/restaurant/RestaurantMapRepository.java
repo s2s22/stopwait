@@ -2,12 +2,8 @@ package com.example.stopwait.restaurant;
 
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-@Repository
 public class RestaurantMapRepository implements RestaurRepository{
 
     private static Map<Integer, Restaurant> db = new HashMap<>();
@@ -24,16 +20,15 @@ public class RestaurantMapRepository implements RestaurRepository{
     }
 
     @Override
-    public Restaurant findById(int restaurantId) {
-        return db.get(restaurantId);
+    public Optional<Restaurant> findById(int restaurantId) {
+        return Optional.ofNullable(db.get(restaurantId));
     }
 
-    @Override
     public Restaurant update(Restaurant restaurant) {
         Restaurant updateRest = db.get(restaurant.getId());
         updateRest.setName(restaurant.getName());
         updateRest.setContent(restaurant.getContent());
-        updateRest.setCategory(restaurant.getCategory());
+        //updateRest.setCategory(restaurant.getCategory());
         updateRest.setRating(restaurant.getRating());
         updateRest.setReview(restaurant.getReview());
 
@@ -43,7 +38,13 @@ public class RestaurantMapRepository implements RestaurRepository{
     }
 
     @Override
-    public void delete(int restaurantId) {
+    public int delete(int restaurantId) {
         db.remove(restaurantId);
+        return db.size();
+    }
+
+    @Override
+    public Optional<Restaurant> findByName(String name) {
+        return Optional.empty();
     }
 }

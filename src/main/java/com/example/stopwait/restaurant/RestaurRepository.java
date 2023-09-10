@@ -1,15 +1,18 @@
 package com.example.stopwait.restaurant;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import java.util.List;
+import java.util.Optional;
 
 public interface RestaurRepository {
 
     int save(Restaurant restaurant);
     List<Restaurant> findAll();
-    Restaurant findById(int restaurantId);
+    Optional<Restaurant> findById(int restaurantId);
 
-    Restaurant update(Restaurant restaurant);
+    int delete(int restaurantId);
 
-    void delete(int restaurantId);
+    Optional<Restaurant> findByName(String name);
 
 }
