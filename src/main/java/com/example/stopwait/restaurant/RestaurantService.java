@@ -1,5 +1,7 @@
 package com.example.stopwait.restaurant;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,12 +13,14 @@ public class RestaurantService {
 
     private final RestaurRepository restaurantRepository;
 
+    private  static final Logger LOG = LoggerFactory.getLogger(RestaurantService.class);
+
     @Autowired
     public RestaurantService(RestaurRepository restaurantRepository) {
         this.restaurantRepository = restaurantRepository;
     }
 
-    public int createRest(Restaurant restaurant) {
+    public int createRestaurant(Restaurant restaurant) {
         vaildateDulplicateRest(restaurant);
         return restaurantRepository.save(restaurant);
     }
@@ -35,7 +39,7 @@ public class RestaurantService {
         updateRest.setName(updateRestDto.getName());
         updateRest.setRating(updateRestDto.getRating());
         updateRest.setContent(updateRestDto.getContent());
-        updateRest.setReview(updateRestDto.getReview());
+        //updateRest.setReview(updateRestDto.getReview());
 
         vaildateDulplicateRest(updateRest);
 
@@ -44,11 +48,12 @@ public class RestaurantService {
         return updateRest;
     }
 
-    public void deleteRest(int restaurantId) {
-        restaurantRepository.delete(restaurantId);
+    public void deleteRestaurant(int restaurantId) {
+        restaurantRepository.deleteRestaurant(restaurantId);
     }
 
     public void vaildateDulplicateRest(Restaurant restaurant) {
+        LOG.error("service error exist : {}" , restaurant.getName());
         restaurantRepository.findByName(restaurant.getName())
                         .ifPresent(rest -> {
                             throw new IllegalStateException("이미 존재하는 식당명입니다.");

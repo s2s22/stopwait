@@ -1,5 +1,7 @@
 package com.example.stopwait.restaurant;
 
+import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +14,8 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/restaurants")
+@RequestMapping("/ㄱ")
+@Slf4j
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
@@ -25,12 +28,12 @@ public class RestaurantController {
 
 
     @PostMapping
-    public ResponseEntity createRest(@RequestBody Restaurant restaurant) {
-        int newRest = restaurantService.createRest(restaurant);
+    public ResponseEntity createRestaurant(@RequestBody Restaurant restaurant) {
+        int newRest = restaurantService.createRestaurant(restaurant);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
-                .path("/{restuarantId}")
+                .path("")
                 .buildAndExpand(newRest)
                 .toUri();
 
@@ -42,7 +45,8 @@ public class RestaurantController {
     @GetMapping
     public ResponseEntity<List<Restaurant>> getAllRest() {
         List<Restaurant> allRest = restaurantService.getAllRest();
-
+        log.info("restaurants :{}", allRest.get(0).getName());
+        log.info("restaurants :{}", allRest.get(0).getReviews().get(0));
         return ResponseEntity.ok()
                 .body(allRest);
     }
@@ -54,6 +58,7 @@ public class RestaurantController {
         HttpHeaders headers = new HttpHeaders();
 
         if (!rest.isPresent()) {
+            log.warn("Not Exist");
             return ResponseEntity.badRequest()
                     .body(new Restaurant());
         }
@@ -73,9 +78,9 @@ public class RestaurantController {
     }
 
     @DeleteMapping("/{restaurantId}")
-    public ResponseEntity deleteRest(@PathVariable int restaurantId) {
+    public ResponseEntity deleteRestaurant(@PathVariable int restaurantId) {
 
-        restaurantService.deleteRest(restaurantId);
+        restaurantService.deleteRestaurant(restaurantId);
 
         return ResponseEntity.noContent().build();
     }
