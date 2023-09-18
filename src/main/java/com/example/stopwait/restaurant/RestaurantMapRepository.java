@@ -30,7 +30,7 @@ public class RestaurantMapRepository implements RestaurRepository{
         updateRest.setContent(restaurant.getContent());
         //updateRest.setCategory(restaurant.getCategory());
         updateRest.setRating(restaurant.getRating());
-        updateRest.setReview(restaurant.getReview());
+        //updateRest.setReview(restaurant.getReview());
 
         db.put(restaurant.getId(), updateRest);
 
@@ -38,7 +38,7 @@ public class RestaurantMapRepository implements RestaurRepository{
     }
 
     @Override
-    public int delete(int restaurantId) {
+    public int deleteRestaurant(int restaurantId) {
         db.remove(restaurantId);
         return db.size();
     }

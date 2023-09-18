@@ -11,7 +11,7 @@ public interface RestaurRepository {
     List<Restaurant> findAll();
     Optional<Restaurant> findById(int restaurantId);
 
-    int delete(int restaurantId);
+    int deleteRestaurant(int restaurantId);
 
     Optional<Restaurant> findByName(String name);
 

@@ -1,8 +1,9 @@
 package com.example.stopwait.restaurant;
 
 import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class UpdateRestDto {
 
     String name;
