@@ -1,5 +1,7 @@
 package com.example.stopwait.restaurant;
 
+import com.example.stopwait.category.Category;
+import com.example.stopwait.category.RestaurantCategory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -7,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -22,6 +25,13 @@ public class RestaurantJpaRepository implements RestaurRepository{
 
     @Override
     public int save(Restaurant restaurant) {
+
+        for (Integer categoryId : restaurant.getCategories()) {
+            Category category = em.find(Category.class, categoryId);
+            RestaurantCategory restaurantCategory = new RestaurantCategory();
+            restaurantCategory.setCategory(category);
+            restaurant.addRestaurantCategory(restaurantCategory);
+        }
         em.persist(restaurant);
         log.debug("repository save : {}" , restaurant.getId());
         return restaurant.getId();

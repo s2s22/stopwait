@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/ㄱ")
+@RequestMapping("/restaurants")
 @Slf4j
 public class RestaurantController {
 
@@ -43,7 +43,7 @@ public class RestaurantController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Restaurant>> getAllRest() {
+    public ResponseEntity<List<Restaurant>> getAllRestarant() {
         List<Restaurant> allRest = restaurantService.getAllRest();
         log.info("restaurants :{}", allRest.get(0).getName());
         log.info("restaurants :{}", allRest.get(0).getReviews().get(0));
@@ -52,7 +52,7 @@ public class RestaurantController {
     }
 
     @GetMapping("/{restaurantId}")
-    public ResponseEntity<Restaurant> getRest(@PathVariable int restaurantId) {
+    public ResponseEntity<Restaurant> getRestarant(@PathVariable int restaurantId) {
         Optional<Restaurant> rest = restaurantService.getRest(restaurantId);
 
         HttpHeaders headers = new HttpHeaders();
