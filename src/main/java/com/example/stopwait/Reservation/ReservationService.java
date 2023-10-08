@@ -2,47 +2,59 @@ package com.example.stopwait.Reservation;
 
 import com.example.stopwait.restaurant.Restaurant;
 import com.example.stopwait.restaurant.RestaurantJpaRepository;
+import com.example.stopwait.restaurant.RestaurantUpdateDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.time.LocalDate;
+
 @Service
+@Slf4j
 public class ReservationService {
 
-    private final ReservationRepositoty reservationRepositoty;
+    private final ReservationRepository reservationRepository;
     private final RestaurantJpaRepository restaurantJpaRepository;
 
-    public ReservationService(ReservationRepositoty reservationRepositoty, RestaurantJpaRepository restaurantJpaRepository) {
-        this.reservationRepositoty = reservationRepositoty;
+    @Autowired
+    public ReservationService(ReservationRepository reservationRepository, RestaurantJpaRepository restaurantJpaRepository) {
+        this.reservationRepository = reservationRepository;
         this.restaurantJpaRepository = restaurantJpaRepository;
     }
 
-    @Autowired
+    public Reservation reserve(int restaurantId, ReservationSaveDto reservationSaveDto) {
+        Restaurant restaurant = restaurantJpaRepository.findById(restaurantId).get();
+        reservationSaveDto.setRestaurant(restaurant);
+        reservationSaveDto.setReservationStatus(ReservationStatus.RESERVATION);
+        Reservation saveReservation = reservationRepository.save(reservationSaveDto);
 
-
-    public void reserve(Reservation reservation) {
-        Restaurant restaurant = restaurantJpaRepository.findById(reservation.getRestaurant().getId()).get();
-        reservation.setRestaurant(restaurant);
-        reservation.setReservationStatus(ReservationStatus.RESERVATION);
-        reservationRepositoty.save(reservation);
+        return saveReservation;
     }
 
-    public Reservation findOne(int restauratnId) {
-        return reservationRepositoty.findById(restauratnId);
+    public Reservation findOne(int reservationId) {
+        return reservationRepository.findById(reservationId);
     }
 
-    public void cancel(int reservationId) {
+    @Transactional
+    public Reservation cancel(int reservationId) {
 
-        Reservation CancelReserve = reservationRepositoty.findById(reservationId);
-        CancelReserve.changeReservationCheck(); //예약 validation
-        CancelReserve.setReservationStatus(ReservationStatus.CANCEL);
+        Reservation reservation = reservationRepository.findById(reservationId);
+        reservation.cancel(ReservationStatus.CANCEL, LocalDate.now());
+        return reservation;
     }
 
-    public void change(@RequestBody updateReserveFrom updateReserveFrom, int reservationId) {
-        Reservation modifyReserve = reservationRepositoty.findById(reservationId);
-        modifyReserve.changeReservationCheck(); //예약 validation
+    @Transactional
+    public Reservation modify(int reservationId, ReservationModifyDto reservationModifyDto) {
+        Reservation reservation = reservationRepository.findById(reservationId);
+        reservation.modify(reservationModifyDto.getReservationDt()
+                            , reservationModifyDto.getReservationTime()
+                            , reservationModifyDto.getDeposit()
+                            ,LocalDate.now()
+                            ,reservationModifyDto.getReserveNumber());
+        return reservation;
 
-        modifyReserve.setReservationDt(updateReserveFrom.getReservationDt());
-        modifyReserve.setReservationTime(updateReserveFrom.getReservationTime());
     }
+
 }

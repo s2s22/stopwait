@@ -1,35 +1,33 @@
 package com.example.stopwait.restaurant;
 
-import org.springframework.stereotype.Repository;
-
 import java.util.*;
 
-public class RestaurantMapRepository implements RestaurRepository{
+public class RestaurantMapRepository {
 
     private static Map<Integer, Restaurant> db = new HashMap<>();
 
-    @Override
-    public int save(Restaurant restaurant) {
-        db.put(restaurant.getId(), restaurant);
-        return db.get(restaurant.getId()).getId();
+    //@Override
+    public int save(RestaurantSaveDto restaurantSaveDto) {
+       // db.put(createRestaurantDto.getId(), restaurant);
+        return 1;
     }
 
-    @Override
+    //@Override
     public List<Restaurant> findAll() {
         return new ArrayList<>(db.values());
     }
 
-    @Override
+    //@Override
     public Optional<Restaurant> findById(int restaurantId) {
         return Optional.ofNullable(db.get(restaurantId));
     }
 
     public Restaurant update(Restaurant restaurant) {
         Restaurant updateRest = db.get(restaurant.getId());
-        updateRest.setName(restaurant.getName());
-        updateRest.setContent(restaurant.getContent());
+        //updateRest.setName(restaurant.getName());
+        //updateRest.setContent(restaurant.getContent());
         //updateRest.setCategory(restaurant.getCategory());
-        updateRest.setRating(restaurant.getRating());
+        //updateRest.setRating(restaurant.getRating());
         //updateRest.setReview(restaurant.getReview());
 
         db.put(restaurant.getId(), updateRest);
@@ -37,13 +35,13 @@ public class RestaurantMapRepository implements RestaurRepository{
         return db.get(restaurant.getId());
     }
 
-    @Override
+    //@Override
     public int deleteRestaurant(int restaurantId) {
         db.remove(restaurantId);
         return db.size();
     }
 
-    @Override
+    //@Override
     public Optional<Restaurant> findByName(String name) {
         return Optional.empty();
     }

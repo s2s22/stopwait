@@ -3,17 +3,21 @@ package com.example.stopwait.restaurant;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
-import java.util.Map;
 
-@Setter @Getter
-public class FormRestaurantDto {
+@Getter @Setter
+public class RestaurantSaveDto {
 
+    @NotBlank
     private String name;
 
     private String content;
 
     private String rating;
 
-    private List<Map<Integer, String>> categories;
+    private List<Integer> categories;
+
+    public RestaurantSaveDto() {
+    }
 }
