@@ -1,11 +1,11 @@
 package com.example.stopwait.restaurant;
 
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -22,14 +22,20 @@ public class RestaurantController {
 
     @Autowired
     public RestaurantController(RestaurantService restaurantService) {
-
         this.restaurantService = restaurantService;
     }
 
 
     @PostMapping
-    public ResponseEntity createRestaurant(@RequestBody Restaurant restaurant) {
-        int newRest = restaurantService.createRestaurant(restaurant);
+    public ResponseEntity createRestaurant(@RequestBody @Validated RestaurantSaveDto restaurantSaveDto, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            log.info("식당 에러 = {}",  bindingResult);
+            return ResponseEntity.badRequest()
+                    .body(bindingResult.getAllErrors());
+        }
+
+        int newRest = restaurantService.createRestaurant(restaurantSaveDto);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -44,7 +50,7 @@ public class RestaurantController {
 
     @GetMapping
     public ResponseEntity<List<Restaurant>> getAllRestarant() {
-        List<Restaurant> allRest = restaurantService.getAllRest();
+        List<Restaurant> allRest = restaurantService.getAllRestaurant();
         log.info("restaurants :{}", allRest.get(0).getName());
         log.info("restaurants :{}", allRest.get(0).getReviews().get(0));
         return ResponseEntity.ok()
@@ -53,14 +59,14 @@ public class RestaurantController {
 
     @GetMapping("/{restaurantId}")
     public ResponseEntity<Restaurant> getRestarant(@PathVariable int restaurantId) {
-        Optional<Restaurant> rest = restaurantService.getRest(restaurantId);
+        Optional<Restaurant> rest = restaurantService.getRestaurant(restaurantId);
 
         HttpHeaders headers = new HttpHeaders();
 
         if (!rest.isPresent()) {
             log.warn("Not Exist");
             return ResponseEntity.badRequest()
-                    .body(new Restaurant());
+                    .body(Restaurant.builder().build());
         }
 
         return ResponseEntity.ok()
@@ -70,8 +76,13 @@ public class RestaurantController {
 
 
     @PatchMapping("{restaurantId}")
-    public ResponseEntity<Restaurant> updateRest(int restaurantId, @RequestBody UpdateRestDto updateRestDto) {
-        Restaurant updateRest = restaurantService.updateRest(restaurantId, updateRestDto);
+    public ResponseEntity<?> updateRest(@PathVariable int restaurantId, @RequestBody @Validated RestaurantUpdateDto restaurantUpdateDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            log.info("식당 에러 = {}",  bindingResult);
+            return ResponseEntity.badRequest()
+                    .body(bindingResult.getAllErrors());
+        }
+        Restaurant updateRest = restaurantService.updateRestaurant(restaurantId, restaurantUpdateDto);
 
         return ResponseEntity.ok()
                 .body(updateRest);
@@ -85,7 +96,7 @@ public class RestaurantController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(IllegalStateException.class)
+    @ExceptionHandler(IllegalStateException.class) //입력값이 잘못들어왔을때 타입미스매치
     public ResponseEntity<String> handleException(IllegalStateException e) {
         return ResponseEntity.badRequest()
                 .body(e.getMessage());

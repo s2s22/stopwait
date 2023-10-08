@@ -1,7 +1,9 @@
 package com.example.stopwait.Reservation;
 
 import com.example.stopwait.restaurant.Restaurant;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -10,10 +12,11 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
-@Getter @Setter
+@Getter
+@NoArgsConstructor
 public class Reservation {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne
@@ -21,10 +24,10 @@ public class Reservation {
     private Restaurant restaurant;
 
     @Column(nullable = false)
-    private LocalDate ReservationDt;
+    private LocalDate reservationDt;
 
     @Column(nullable = false)
-    private LocalTime ReservationTime;
+    private LocalTime reservationTime;
 
     private int deposit;
 
@@ -33,11 +36,29 @@ public class Reservation {
 
     private LocalDate modifyDt;
 
-    public void changeReservationCheck() {
-        if (LocalDate.now().isEqual(this.ReservationDt)
-                && LocalTime.now().minusHours(1).isAfter(this.ReservationTime)) {
-            throw new IllegalStateException("예약 한시간 전에는 예약을 변경 하거나 취소 할 수 없습니다");
-        }
+    private int reserveNumber;
 
+    @Builder
+    public Reservation(Restaurant restaurant, LocalDate reservationDt, LocalTime reservationTime, int deposit, LocalDate modifyDt, int reserveNumber) {
+        this.restaurant = restaurant;
+        this.reservationDt = reservationDt;
+        this.reservationTime = reservationTime;
+        this.deposit = deposit;
+        this.modifyDt = modifyDt;
+        this.reserveNumber = reserveNumber;
     }
+
+    public void cancel(ReservationStatus reservationStatus, LocalDate modifyDt) {
+        this.reservationStatus  = reservationStatus;
+        this.modifyDt = modifyDt;
+    }
+
+    public void modify(LocalDate reservationDt, LocalTime reservationTime, int deposit, LocalDate modifyDt, int reserveNumber) {
+        this.reservationDt = reservationDt == null ? this.reservationDt : reservationDt;
+        this.reservationTime = reservationTime == null ? this.reservationTime : reservationTime;
+        this.deposit = deposit;
+        this.modifyDt = modifyDt;
+        this.reserveNumber = reserveNumber;
+    }
+
 }
